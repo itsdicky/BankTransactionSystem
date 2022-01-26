@@ -77,9 +77,11 @@ public class MainFrame extends JFrame {
         }
     }
 
+    /*
     public void setBankNum(Integer number) {
         this.banknum = number;
     }
+    */
 
     private void setListener() {
         submiButton.addActionListener(evt -> {

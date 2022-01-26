@@ -75,7 +75,7 @@ public class LoginFrame extends JFrame {
             String password = passTextField.getText();
             
             try(Connection con = DriverManager.getConnection(url,user,pass)) {
-                ResultSet rs = con.createStatement().executeQuery("SELECT a.bank_number FROM account a, user b WHERE b.id_user = (SELECT id_user FROM login WHERE email='"+email+"' AND password='"+password+"');");
+                ResultSet rs = con.createStatement().executeQuery("SELECT a.bank_number FROM user a JOIN login b USING(id_user) WHERE b.email='"+email+"' AND b.password='"+password+"'");
                 
                 rs.next();
                 mainFrame.banknum = Integer.parseInt(rs.getString(1));
