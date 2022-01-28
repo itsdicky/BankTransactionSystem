@@ -18,17 +18,16 @@ public class LoginFrame extends JFrame {
     private JButton submitButton = new JButton("Submit");
     private JButton registerButton = new JButton("Register");
 
-    String url = "jdbc:mysql://localhost:3306/bank";
-    String user = "root";
-    String pass = "";
-    private String query;
+    //database
+    private String url = "jdbc:mysql://localhost:3306/bank";
+    private String user = "root";
+    private String pass = "";
 
-    //private Integer bankNum = null;
-    private Integer id_user = null; 
-
+    //frame
     MainFrame mainFrame = new MainFrame();
     RegisterFrame registerFrame = new RegisterFrame();
 
+    //constructor
     public LoginFrame() throws ClassNotFoundException {
         setFrame();
         initComponents();
@@ -61,25 +60,26 @@ public class LoginFrame extends JFrame {
         add(submitButton);
         add(registerButton);
     }
-    /*
-    public Integer getBankNum() {
-        return this.bankNum;
-    }*/
 
     private void setListener() throws ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
 
+        //submit button listener
         submitButton.addActionListener(evt -> {
             
+            //get text from textfield
             String email = unameTextField.getText();
             String password = passTextField.getText();
             
+            //login
             try(Connection con = DriverManager.getConnection(url,user,pass)) {
-                ResultSet rs = con.createStatement().executeQuery("SELECT a.bank_number FROM user a JOIN login b USING(id_user) WHERE b.email='"+email+"' AND b.password='"+password+"'");
                 
+                //execute query
+                ResultSet rs = con.createStatement().executeQuery("SELECT a.bank_number FROM user a JOIN login b USING(id_user) WHERE b.email='"+email+"' AND b.password='"+password+"'");
                 rs.next();
                 mainFrame.banknum = Integer.parseInt(rs.getString(1));
 
+                //change frame to mainFrame and set balance label
                 dispose();
                 mainFrame.setVisible(true);
                 mainFrame.setBalanceLabel();
@@ -89,6 +89,7 @@ public class LoginFrame extends JFrame {
             }
         });
 
+        //register button listener
         registerButton.addActionListener(evt -> {
             if (registerFrame.register()==true) {
                 registerFrame.setVisible(true);

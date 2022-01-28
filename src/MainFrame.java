@@ -6,9 +6,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import java.sql.Date;
 
-//import java.awt.Font;
+import java.awt.Font;
 
 public class MainFrame extends JFrame {
     
@@ -21,12 +20,12 @@ public class MainFrame extends JFrame {
     private JTextField inputField = new JTextField();
     private JTextArea detailArea = new JTextArea();
 
-    private String status = "";
-
-    public Integer banknum;
+    private String status = ""; //status for transaction
+    public Integer banknum; //your bank number
 
     private Transaction tx = new Transaction();
 
+    //constructor
     public MainFrame() {
         setFrame();
         initComponents();
@@ -43,8 +42,8 @@ public class MainFrame extends JFrame {
 
     private void initComponents() {
         
-        //Font balanceFont = new Font("Dialog", 1, 32);
-        //balanceLabel.setFont(balanceFont);
+        Font balanceFont = new Font("Dialog", 1, 32);
+        balanceLabel.setFont(balanceFont);
 
         optionGroup.add(transferRadioButton);
         optionGroup.add(withdrawRadioButton);
@@ -52,7 +51,7 @@ public class MainFrame extends JFrame {
 
         detailArea.setEditable(false);
 
-        balanceLabel.setBounds(30, 20, 80, 30);
+        balanceLabel.setBounds(30, 20, 200, 30);
         transferRadioButton.setBounds(30, 60, 80, 20);
         withdrawRadioButton.setBounds(30, 80, 80, 20);
         depositRadioButton.setBounds(30, 100, 80, 20);
@@ -69,6 +68,7 @@ public class MainFrame extends JFrame {
         add(detailArea);
     }
 
+    //set balance label
     public void setBalanceLabel() {
         try {
             balanceLabel.setText(tx.update(banknum));
@@ -78,23 +78,26 @@ public class MainFrame extends JFrame {
     }
 
     private void setListener() {
+
+        //submit button listener (transaction)
         submiButton.addActionListener(evt -> {
+            
             int input = 0;
             String newStatus = "";
             
             try {
                 input = Integer.parseInt(inputField.getText());
 
-                if (transferRadioButton.isSelected()) {
+                if (transferRadioButton.isSelected()) { //transfer
                     int recnum = Integer.parseInt(JOptionPane.showInputDialog(this, "add recipient"));
-                    newStatus = "Telah ditransfer sebesar " + input + "\n";
+                    newStatus = "Telah ditransfer ke " + tx.toName(recnum) + " sebesar " + input + "\n";
                     tx.transfer(banknum, recnum, input);
                     balanceLabel.setText(tx.update(banknum));
-                } else if (withdrawRadioButton.isSelected()) {
+                } else if (withdrawRadioButton.isSelected()) { //withdraw
                     newStatus = "Telah ditarik sebesar " + input + "\n";
                     tx.withdraw(banknum, input);
                     balanceLabel.setText(tx.update(banknum));
-                } else if (depositRadioButton.isSelected()) {
+                } else if (depositRadioButton.isSelected()) { //deposit
                     newStatus = "Telah deposit sebesar " + input + "\n";
                     tx.deposit(banknum, input);
                     balanceLabel.setText(tx.update(banknum));
@@ -102,13 +105,13 @@ public class MainFrame extends JFrame {
                     JOptionPane.showMessageDialog(this, "Opsi belum dipilih!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 
-                //print to detailArea
+                //print status to detailArea
                 status = newStatus + status;
                 detailArea.setText(status);
 
                 JOptionPane.showMessageDialog(this, "Berhasil!", "Success", JOptionPane.INFORMATION_MESSAGE); //bug
 
-                //reset
+                //reset textfield
                 optionGroup.clearSelection();
                 inputField.setText("");
 
