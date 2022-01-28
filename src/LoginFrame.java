@@ -85,7 +85,6 @@ public class LoginFrame extends JFrame {
                 mainFrame.setBalanceLabel();
 
             }catch (SQLException e) {
-                e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Invalid email or password!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });

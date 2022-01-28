@@ -7,33 +7,26 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 
 public class Transaction {
-    //MysqlCon connection;
     //query
-    String querySelect, queryInsert, queryUpdate;
-    String result;
+    private String querySelect, queryInsert, queryUpdate;
+    private String result;
 
     //date
-    long now = System.currentTimeMillis();
-    Date sqlDate = new Date(now);
+    private long now = System.currentTimeMillis();
+    private Date sqlDate = new Date(now);
 
     //access
-    String url = "jdbc:mysql://localhost:3306/bank";
-    String user = "root";
-    String pass = "";
-    
-    public String update(Integer bank_number) throws ClassNotFoundException {
-        String banknum = Integer.toString(bank_number);
-        
-        Class.forName("com.mysql.jdbc.Driver");
-        querySelect = "SELECT balance FROM account WHERE bank_number = '"+banknum+"';";
-        result = "";
+    private String url = "jdbc:mysql://localhost:3306/bank";
+    private String user = "root";
+    private String pass = "";
 
+    public String update(int bank_number) throws ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+        querySelect = "SELECT balance FROM account WHERE bank_number = '"+bank_number+"';";
         try(Connection con = DriverManager.getConnection(url,user,pass)) {
             ResultSet rs = con.createStatement().executeQuery(querySelect);
-
-            while(rs.next()){
-                result = rs.getString(1);
-            }
+            rs.next();
+            result = rs.getString(1);
         }catch (SQLException e) {
             e.printStackTrace();
         }
@@ -41,15 +34,14 @@ public class Transaction {
     }
 
     public void deposit(int bank_number, int ammount) throws ClassNotFoundException {
-        String bank,amm,date;
-        bank = Integer.toString(bank_number);
-        amm = Integer.toString(ammount);
-        date = sqlDate.toString();
+        String date = sqlDate.toString();
 
+        //prepare
         Class.forName("com.mysql.jdbc.Driver");
-        queryInsert = "INSERT INTO transaction (bank_number, amount, detail, date) VALUES ('"+bank+"','"+amm+"','deposit','"+date+"')";
+        queryInsert = "INSERT INTO transaction (bank_number, amount, detail, date) VALUES ('"+bank_number+"','"+ammount+"','deposit','"+date+"')";
         queryUpdate = "UPDATE account SET balance = balance + '"+ammount+"' WHERE bank_number = '"+bank_number+"';";
 
+        //execute
         try(Connection con = DriverManager.getConnection(url,user,pass)) {
             Statement stmt = con.createStatement();
             stmt.executeUpdate(queryInsert);
@@ -60,13 +52,10 @@ public class Transaction {
     }
 
     public void withdraw(int bank_number, int ammount) throws ClassNotFoundException {
-        String bank,amm,date;
-        bank = Integer.toString(bank_number);
-        amm = Integer.toString(ammount);
-        date = sqlDate.toString();
+        String date = sqlDate.toString();
 
         Class.forName("com.mysql.jdbc.Driver");
-        queryInsert = "INSERT INTO transaction (bank_number, amount, detail, date) VALUES ('"+bank+"','"+amm+"','withdraw','"+date+"')";
+        queryInsert = "INSERT INTO transaction (bank_number, amount, detail, date) VALUES ('"+bank_number+"','"+ammount+"','withdraw','"+date+"')";
         queryUpdate = "UPDATE account SET balance = balance - '"+ammount+"' WHERE bank_number = '"+bank_number+"';";
 
         try(Connection con = DriverManager.getConnection(url,user,pass)) {
@@ -79,14 +68,10 @@ public class Transaction {
     }
 
     public void transfer(int bank_number, int rec_number, int ammount) throws ClassNotFoundException {
-        String bank,amm,date,rec;
-        bank = Integer.toString(bank_number);
-        rec = Integer.toString(rec_number);
-        amm = Integer.toString(ammount);
-        date = sqlDate.toString();
+        String date = sqlDate.toString();
 
         Class.forName("com.mysql.jdbc.Driver");
-        queryInsert = "INSERT INTO transaction (bank_number, amount, detail, date) VALUES ('"+bank+"','"+amm+"','transfer','"+date+"')";
+        queryInsert = "INSERT INTO transaction (bank_number, amount, detail, date) VALUES ('"+bank_number+"','"+ammount+"','transfer','"+date+"')";
         queryUpdate = "UPDATE account SET balance = balance - '"+ammount+"' WHERE bank_number = '"+bank_number+"';";
 
         try(Connection con = DriverManager.getConnection(url,user,pass)) {
@@ -97,7 +82,7 @@ public class Transaction {
             e.printStackTrace();
         }
 
-        queryInsert = "INSERT INTO transaction (bank_number, amount, detail, date) VALUES ('"+rec+"','"+amm+"','receive','"+date+"')";
+        queryInsert = "INSERT INTO transaction (bank_number, amount, detail, date) VALUES ('"+rec_number+"','"+ammount+"','receive','"+date+"')";
         queryUpdate = "UPDATE account SET balance = balance + '"+ammount+"' WHERE bank_number = '"+rec_number+"';";
 
         try(Connection con = DriverManager.getConnection(url,user,pass)) {

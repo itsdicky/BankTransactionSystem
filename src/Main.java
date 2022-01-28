@@ -8,7 +8,7 @@ public class Main {
     //JFrame registerFrame;
     
     public Main() throws ClassNotFoundException {
-        new MysqlCon();
+        //new MysqlCon();
         loginFrame = new LoginFrame();
         //mainFrame = new MainFrame();
     }

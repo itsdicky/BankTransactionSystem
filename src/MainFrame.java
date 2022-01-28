@@ -77,12 +77,6 @@ public class MainFrame extends JFrame {
         }
     }
 
-    /*
-    public void setBankNum(Integer number) {
-        this.banknum = number;
-    }
-    */
-
     private void setListener() {
         submiButton.addActionListener(evt -> {
             int input = 0;
@@ -92,18 +86,15 @@ public class MainFrame extends JFrame {
                 input = Integer.parseInt(inputField.getText());
 
                 if (transferRadioButton.isSelected()) {
-                    //detailArea.setText("Telah ditransfer sebesar " + input);
                     int recnum = Integer.parseInt(JOptionPane.showInputDialog(this, "add recipient"));
                     newStatus = "Telah ditransfer sebesar " + input + "\n";
                     tx.transfer(banknum, recnum, input);
                     balanceLabel.setText(tx.update(banknum));
                 } else if (withdrawRadioButton.isSelected()) {
-                    //detailArea.setText("Telah ditarik sebesar " + input);
                     newStatus = "Telah ditarik sebesar " + input + "\n";
                     tx.withdraw(banknum, input);
                     balanceLabel.setText(tx.update(banknum));
                 } else if (depositRadioButton.isSelected()) {
-                    //detailArea.setText("Telah deposit sebesar " + input);
                     newStatus = "Telah deposit sebesar " + input + "\n";
                     tx.deposit(banknum, input);
                     balanceLabel.setText(tx.update(banknum));
