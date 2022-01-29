@@ -17,6 +17,7 @@ public class MainFrame extends JFrame {
     private JRadioButton depositRadioButton = new JRadioButton("Deposit");
     private ButtonGroup optionGroup = new ButtonGroup();
     private JButton submiButton = new JButton("Submit");
+    private JButton logoutButton = new JButton("Logout");
     private JTextField inputField = new JTextField();
     private JTextArea detailArea = new JTextArea();
 
@@ -37,7 +38,6 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
-        //setVisible(true);
     }
 
     private void initComponents() {
@@ -57,7 +57,8 @@ public class MainFrame extends JFrame {
         depositRadioButton.setBounds(30, 100, 80, 20);
         inputField.setBounds(150, 60, 100, 25);
         submiButton.setBounds(150, 90, 100, 25);
-        detailArea.setBounds(30, 150, 220, 180);
+        logoutButton.setBounds(85, 320, 105, 25);
+        detailArea.setBounds(30, 130, 220, 180);
 
         add(balanceLabel);
         add(transferRadioButton);
@@ -65,6 +66,7 @@ public class MainFrame extends JFrame {
         add(depositRadioButton);
         add(inputField);
         add(submiButton);
+        add(logoutButton);
         add(detailArea);
     }
 
@@ -135,6 +137,18 @@ public class MainFrame extends JFrame {
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Input tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        //logout button listener
+        logoutButton.addActionListener(evt -> {
+            dispose();
+            LoginFrame loginFrame;
+            try {
+                loginFrame = new LoginFrame();
+                loginFrame.setVisible(true);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         });
     }
