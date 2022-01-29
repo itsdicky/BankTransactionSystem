@@ -9,7 +9,8 @@ import javax.swing.JOptionPane;
 public class Transaction {
     //query
     private String querySelect, queryInsert, queryUpdate;
-    private String result;
+    private String result; 
+    private boolean userCheck;
 
     //date
     private long now = System.currentTimeMillis();
@@ -19,6 +20,24 @@ public class Transaction {
     private String url = "jdbc:mysql://localhost:3306/bank";
     private String user = "root";
     private String pass = "";
+
+    //check is user exist
+    public boolean isUserExist(int bank_number) throws ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+        querySelect = "SELECT COUNT(*) FROM account WHERE bank_number='"+bank_number+"';";
+        try(Connection con = DriverManager.getConnection(url,user,pass)) {
+            ResultSet rs = con.createStatement().executeQuery(querySelect);
+            rs.next();
+            if (rs.getString(1).equals("1")) {
+                userCheck = true;
+            } else {
+                userCheck = false;
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userCheck;
+    }
 
     //from bank_number to name
     public String toName(int bank_number) throws ClassNotFoundException {
@@ -115,6 +134,6 @@ public class Transaction {
             stmt.executeUpdate(queryUpdate);
         }catch (SQLException e) {
             e.printStackTrace();
-        }
+        }    
     }
 }

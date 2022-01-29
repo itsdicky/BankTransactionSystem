@@ -77,6 +77,10 @@ public class MainFrame extends JFrame {
         }
     }
 
+    private void successMsg() {
+        JOptionPane.showMessageDialog(this, "Berhasil!", "Success", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private void setListener() {
 
         //submit button listener (transaction)
@@ -90,17 +94,25 @@ public class MainFrame extends JFrame {
 
                 if (transferRadioButton.isSelected()) { //transfer
                     int recnum = Integer.parseInt(JOptionPane.showInputDialog(this, "add recipient"));
-                    newStatus = "Telah ditransfer ke " + tx.toName(recnum) + " sebesar " + input + "\n";
-                    tx.transfer(banknum, recnum, input);
-                    balanceLabel.setText(tx.update(banknum));
+                    if (tx.isUserExist(recnum)) {
+                        newStatus = "Telah ditransfer ke " + tx.toName(recnum) + " sebesar " + input + "\n";
+                        tx.transfer(banknum, recnum, input);
+                        balanceLabel.setText(tx.update(banknum));
+                        successMsg();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Transaksi Gagal!", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                    
                 } else if (withdrawRadioButton.isSelected()) { //withdraw
                     newStatus = "Telah ditarik sebesar " + input + "\n";
                     tx.withdraw(banknum, input);
                     balanceLabel.setText(tx.update(banknum));
+                    successMsg();
                 } else if (depositRadioButton.isSelected()) { //deposit
                     newStatus = "Telah deposit sebesar " + input + "\n";
                     tx.deposit(banknum, input);
                     balanceLabel.setText(tx.update(banknum));
+                    successMsg();
                 } else {
                     JOptionPane.showMessageDialog(this, "Opsi belum dipilih!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -109,16 +121,12 @@ public class MainFrame extends JFrame {
                 status = newStatus + status;
                 detailArea.setText(status);
 
-                JOptionPane.showMessageDialog(this, "Berhasil!", "Success", JOptionPane.INFORMATION_MESSAGE); //bug
-
                 //reset textfield
                 optionGroup.clearSelection();
                 inputField.setText("");
 
             } catch (Exception e) {
-                //TODO: handle exception
-                //JOptionPane.showMessageDialog(this, "Input tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Input tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
