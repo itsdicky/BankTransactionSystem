@@ -18,6 +18,8 @@ public class LoginFrame extends JFrame {
     private JButton submitButton = new JButton("Submit");
     private JButton registerButton = new JButton("Register");
 
+    private boolean userCheck;
+
     //database
     private String url = "jdbc:mysql://localhost:3306/bank";
     private String user = "root";
@@ -61,30 +63,55 @@ public class LoginFrame extends JFrame {
         add(registerButton);
     }
 
+    //set bank number at mainFrame
+    private void setBankNumber(String email, String password) {
+        try(Connection con = DriverManager.getConnection(url,user,pass)) {
+            ResultSet rs = con.createStatement().executeQuery("SELECT a.bank_number FROM user a JOIN login b USING(id_user) WHERE b.email='"+email+"' AND b.password='"+password+"'");
+            rs.next();
+            mainFrame.banknum = Integer.parseInt(rs.getString(1));
+        }catch (SQLException e) {
+            e.getStackTrace();
+        }
+    }
+
+    //check email and password match
+    private boolean loginCheck(String email, String password) {
+        try(Connection con = DriverManager.getConnection(url,user,pass)) {
+            ResultSet rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM user a JOIN login b USING(id_user) WHERE b.email='"+email+"' AND b.password='"+password+"';");
+            rs.next();
+            mainFrame.banknum = Integer.parseInt(rs.getString(1));
+            if (rs.getString(1).equals("1")) {
+                userCheck = true;
+            } else {
+                userCheck = false;
+            }
+        }catch (SQLException e) {
+            e.getStackTrace();
+        }
+        return userCheck;
+    }
+
+    //change frame to mainFrame and set balance label
+    private void changeFrame() {
+        dispose();
+        mainFrame.setVisible(true);
+        mainFrame.setBalanceLabel();
+    }
+
     private void setListener() throws ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
 
         //submit button listener
         submitButton.addActionListener(evt -> {
-            
             //get text from textfield
             String email = unameTextField.getText();
             String password = passTextField.getText();
             
-            //login
-            try(Connection con = DriverManager.getConnection(url,user,pass)) {
-                
-                //execute query
-                ResultSet rs = con.createStatement().executeQuery("SELECT a.bank_number FROM user a JOIN login b USING(id_user) WHERE b.email='"+email+"' AND b.password='"+password+"'");
-                rs.next();
-                mainFrame.banknum = Integer.parseInt(rs.getString(1));
-
-                //change frame to mainFrame and set balance label
-                dispose();
-                mainFrame.setVisible(true);
-                mainFrame.setBalanceLabel();
-
-            }catch (SQLException e) {
+            //login    
+            if (loginCheck(email, password)) {
+                setBankNumber(email, password);
+                changeFrame();
+            } else {
                 JOptionPane.showMessageDialog(this, "Invalid email or password!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -97,5 +124,3 @@ public class LoginFrame extends JFrame {
         });
     }
 }
-
-//login
