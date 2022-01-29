@@ -77,8 +77,18 @@ public class MainFrame extends JFrame {
         }
     }
 
+    //clear text field
+    private void clearTextField() {
+        optionGroup.clearSelection();
+        inputField.setText("");
+    }
+
     private void successMsg() {
         JOptionPane.showMessageDialog(this, "Berhasil!", "Success", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void errorMsg(String detail) {
+        JOptionPane.showMessageDialog(this, detail, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     private void setListener() {
@@ -100,30 +110,28 @@ public class MainFrame extends JFrame {
                         balanceLabel.setText(tx.update(banknum));
                         successMsg();
                     } else {
-                        JOptionPane.showMessageDialog(this, "Transaksi Gagal!", "Error", JOptionPane.ERROR_MESSAGE);
+                        errorMsg("User tidak ditemukan!");
                     }
-                    
+                    clearTextField();
                 } else if (withdrawRadioButton.isSelected()) { //withdraw
                     newStatus = "Telah ditarik sebesar " + input + "\n";
                     tx.withdraw(banknum, input);
                     balanceLabel.setText(tx.update(banknum));
                     successMsg();
+                    clearTextField();
                 } else if (depositRadioButton.isSelected()) { //deposit
                     newStatus = "Telah deposit sebesar " + input + "\n";
                     tx.deposit(banknum, input);
                     balanceLabel.setText(tx.update(banknum));
                     successMsg();
+                    clearTextField();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Opsi belum dipilih!", "Error", JOptionPane.ERROR_MESSAGE);
+                    errorMsg("Opsi belum dipilih!");
                 }
                 
                 //print status to detailArea
                 status = newStatus + status;
                 detailArea.setText(status);
-
-                //reset textfield
-                optionGroup.clearSelection();
-                inputField.setText("");
 
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Input tidak valid!", "Error", JOptionPane.ERROR_MESSAGE);
