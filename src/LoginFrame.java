@@ -43,6 +43,7 @@ public class LoginFrame extends JFrame {
         setLayout(null);
         setLocationRelativeTo(null);
         setVisible(true);
+        setTitle("Login");
     }
 
     private void initComponents() {
@@ -118,9 +119,7 @@ public class LoginFrame extends JFrame {
 
         //register button listener
         registerButton.addActionListener(evt -> {
-            if (registerFrame.register()==true) {
-                registerFrame.setVisible(true);
-            }
+            registerFrame.setVisible(true);
         });
     }
 }

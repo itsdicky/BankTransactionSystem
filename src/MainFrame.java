@@ -38,6 +38,9 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setTitle("Transaction System");
     }
 
     private void initComponents() {
